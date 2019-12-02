@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Authors>Kevin Asbury</Authors>
+    <AssemblyName>hack</AssemblyName>
   </PropertyGroup>
 
 </Project>

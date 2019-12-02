@@ -2,11 +2,13 @@
 {
     interface ICreature
     {
-        string name { get; set; }
-        int damage { get; set; }
-        int hp { get; set; }
-        int hpMax { get; set; }
+        string Name { get; set; }
+        int Damage { get; set; }
+        int Hp { get; set; }
+        int HpMax { get; set; }
 
         void Save();
+
+        bool isAlive();
     }
 }

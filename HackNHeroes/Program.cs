@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace HackNHeroes
 {
@@ -8,19 +9,23 @@ namespace HackNHeroes
         {
             bool quit = false;
 
+            PrintMenu();
+
             while (!quit)
             {
-                Console.WriteLine("Hello World!");
-                PrintMenu();
+                var choice = Console.Read();
+                MainMenuSelection(choice);
+                
             }
             
         }
 
-        private static void MainMenuSelection(int n)
+        private static void MainMenuSelection(int choice)
         {
-            switch (n)
+            switch (choice)
             {
                 case 0:
+                    Environment.Exit(0);
                     break;
                 case 1:
                     break;
@@ -34,26 +39,12 @@ namespace HackNHeroes
                     break;
                 case 6:
                     break;
-            }
-        }
-
-        private static void BattleMenuSelection(int n)
-        {
-            switch (n)
-            {
-                case 0:
+                case 7:
                     break;
-                case 1:
+                case 8:
                     break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                case 6:
+                case 9:
+                    PrintMenu();
                     break;
             }
         }
@@ -61,10 +52,19 @@ namespace HackNHeroes
         private static void PrintMenu()
         {
             Console.WriteLine('\n');
-            Console.WriteLine(
-                @"
-1) Hello World!
-q) Quit");
+            Console.WriteLine("" +
+                              "*****************************\n" +
+                              "0) Run away little girl!\n" +
+                              "1) DEATHMATCH\n" +
+                              "2) ATTACK!\n" +
+                              "3) \n" +
+                              "4) \n" +
+                              "5) New Hero\n" +
+                              "6) New Foe\n" +
+                              "7) Load\n" +
+                              "8) Save\n" +
+                              "9) Print Menu\n" +
+                              "*****************************");
         }
     }
 }
