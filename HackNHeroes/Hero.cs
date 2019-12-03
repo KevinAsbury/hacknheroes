@@ -26,7 +26,10 @@ namespace HackNHeroes
 
         public bool isAlive()
         {
-            return true;
+            if (Hp > 0)
+                return true;
+
+            return false;
         }
 
         internal void attack()
