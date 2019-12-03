@@ -7,8 +7,6 @@
         int Hp { get; set; }
         int HpMax { get; set; }
 
-        void Save();
-
         bool isAlive();
     }
 }

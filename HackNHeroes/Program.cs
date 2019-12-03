@@ -5,12 +5,10 @@ namespace HackNHeroes
 {
     class Program
     {
-        
-
         static void Main(string[] args)
         {
-            Hero hero = new Hero("Conan", 60, 10);
-            Foe foe = new Foe("Thoth-Amon", 100, 6);
+            Creature hero = new Creature("Conan", 60, 10);
+            Creature foe = new Creature("Thoth-Amon", 100, 6);
             bool quit = false;
             Combat combat = new Combat();
 
@@ -33,7 +31,7 @@ namespace HackNHeroes
             Environment.Exit(0);
         }
 
-        private static (bool, Hero, Foe) MainMenuSelection(int choice, Combat combat, Hero hero, Foe foe)
+        private static (bool, Creature, Creature) MainMenuSelection(int choice, Combat combat, Creature hero, Creature foe)
         {
             switch (choice)
             {
@@ -41,18 +39,21 @@ namespace HackNHeroes
                     return (true, null, null);
                 case 0x31:
                     combat.DeathMatch(hero, foe);
+                    PrintMenu();
                     return (false, null, null);
                 case 0x32:
                     combat.Round(hero, foe);
                     return (false, null, null);
                 case 0x33:
+                    hero.Hp = hero.HpMax;
                     return (false, null, null);
                 case 0x34:
+                    foe.Hp = foe.HpMax;
                     return (false, null, null);
                 case 0x35:
-                    return (false, NewHero(hero), null);
+                    return (false, NewCreature(hero, true), null);
                 case 0x36:
-                    return (false, null, NewFoe(foe));
+                    return (false, null, NewCreature(foe, false));
                 case 0x37:
                     return (false, null, null);
                 case 0x38:
@@ -73,8 +74,8 @@ namespace HackNHeroes
                               "0) Run away little girl! (quit)\n" +
                               "1) DEATHMATCH\n" +
                               "2) ATTACK!\n" +
-                              "3) \n" +
-                              "4) \n" +
+                              "3) Heal hero\n" +
+                              "4) Heal foe\n" +
                               "5) New Hero\n" +
                               "6) New Foe\n" +
                               "7) Load\n" +
@@ -83,11 +84,14 @@ namespace HackNHeroes
                               "*****************************");
         }
 
-        private static Hero NewHero(Hero hero)
+        private static Creature NewCreature(Creature hero, bool isHero = true)
         {
             Console.WriteLine('\n');
 
-            Console.WriteLine(@"What is the new hero's name: ");
+            var type = "creature";
+            if (isHero) type = "hero";
+
+            Console.WriteLine(@"What is the new {type}'s name: ");
             hero.Name = Console.ReadLine();
 
             Console.WriteLine('\n');
@@ -101,26 +105,6 @@ namespace HackNHeroes
             hero.Damage = Console.Read();
             
             return hero;
-        }
-
-        private static Foe NewFoe(Foe foe)
-        {
-            Console.WriteLine('\n');
-
-            Console.WriteLine(@"What is the new foe called: ");
-            foe.Name = Console.ReadLine();
-
-            Console.WriteLine('\n');
-            Console.WriteLine(@"How much health: ");
-            var hp = Console.Read();
-            foe.Hp = hp;
-            foe.HpMax = hp;
-
-            Console.WriteLine('\n');
-            Console.WriteLine(@"How much damage: ");
-            foe.Damage = Console.Read();
-
-            return foe;
         }
     }
 }
