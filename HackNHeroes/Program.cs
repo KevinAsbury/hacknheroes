@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace HackNHeroes
 {
@@ -8,17 +6,11 @@ namespace HackNHeroes
     {
         static void Main(string[] args)
         {
-            //string text = System.IO.File.ReadAllText(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\DevilDjinnFight.txt");
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Green;
             Hero hero = new Hero();
             Monster foe = new Monster();
             bool quit = false;
-
-            //string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            //string text = $@"{path}\DevilDjinnFight.txt";
-            //Console.WriteLine(text);
-            //Console.Read();
 
             PrintMenu(hero.Name);
 
@@ -50,16 +42,16 @@ namespace HackNHeroes
                     PrintNewHero(hero);
                     return false;
                 case 0x53: //S
-                    Console.WriteLine($"You picked {Convert.ToChar(input).ToString()}");
+                    hero.Save();
                     return false;
                 case 0x4C: //L
-                    Console.WriteLine($"You picked {Convert.ToChar(input).ToString()}");
+                    PrintLoad(hero);
                     return false;
                 case 0x4D: //M
                     PrintMenu(hero.Name);
                     return false;
                 case 0x51: //Q
-                    Console.WriteLine("Run away little girl!");
+                    Console.WriteLine("The crowd BOOOOOS as you walk away.");
                     return true;
             }
 
@@ -126,6 +118,25 @@ namespace HackNHeroes
             PrintHeader("Rest");
             Console.WriteLine($"{hero.Name} thuds heavily on the pile of straw that serves as a bed and sleeps.");
             hero.Rest();
+            PrintFooter(hero.Name);
+        }
+
+        private static void PrintLoad(Hero hero)
+        {
+            bool stop = false;
+
+            while (!stop)
+            {
+                Console.Clear();
+                PrintHeader("Load Hero");
+                Console.Write($"Name: ");
+                var name = Console.ReadLine();
+                if (name.Length > 3)
+                {
+                    hero.Load(name);
+                    stop = true;
+                }
+            }
             PrintFooter(hero.Name);
         }
 

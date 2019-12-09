@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace HackNHeroes
 {
@@ -92,25 +93,44 @@ namespace HackNHeroes
             return 1;
         }
 
-        internal void Rename(string name)
-        {
-            Name = name;
-        }
-
-        internal void PrintStats()
-        {
-
-        }
-
         internal void Save()
         {
             // TODO: Use a cipher to save
+            string text = $"{Name},{Hp},{HpMax},{Experience},{Damage},{Kills}";
+            System.IO.File.WriteAllText(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + $@"\{Name}.SAV", text);
+        }
+
+        internal void Load(string name)
+        {
+            // TODO: Load encrypted save
+            if (File.Exists(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + $@"\{name}.SAV"))
+            {
+                string text = System.IO.File.ReadAllText(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + $@"\{name}.SAV");
+                var data = text.Split(',');
+                Name = data[0];
+                Hp = Convert.ToInt32(data[1]);
+                HpMax = Convert.ToInt32(data[2]);
+                Experience = Convert.ToInt64(data[3]);
+                Damage = Convert.ToInt32(data[4]);
+                Kills = Convert.ToInt32(data[5]);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"ERROR: No hero named {name} found!");
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+           
         }
 
         private void LevelUp(int hp, int damage)
         {
             HpMax += hp;
             Damage += damage;
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"*** {Name} is level {getLevel()}! You should rest ***");
+            Console.ForegroundColor = ConsoleColor.Green;
         }
     }
 }
