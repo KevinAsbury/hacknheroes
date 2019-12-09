@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace HackNHeroes
 {
@@ -7,81 +8,166 @@ namespace HackNHeroes
     {
         static void Main(string[] args)
         {
-            Creature hero = new Creature("Conan", 60, 10);
-            Creature foe = new Creature("Thoth-Amon", 100, 6);
+            //string text = System.IO.File.ReadAllText(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\DevilDjinnFight.txt");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Hero hero = new Hero();
+            Monster foe = new Monster();
             bool quit = false;
-            Combat combat = new Combat();
 
-            PrintMenu();
+            //string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            //string text = $@"{path}\DevilDjinnFight.txt";
+            //Console.WriteLine(text);
+            //Console.Read();
 
-            while (!quit)
+            PrintMenu(hero.Name);
+
+            do
             {
-                int choice = Console.Read();
-                var result = MainMenuSelection(choice, combat, hero, foe);
-                quit = result.Item1;
+                var result = MainMenuSelection(Console.Read(), hero);
+                quit = result;
+            } while (!quit);
 
-                if (result.Item2 != null)
-                    hero = result.Item2;
-
-                if (result.Item3 != null)
-                    foe = result.Item3;
-            }
-
-            Console.WriteLine("Run away little girl!");
-            Environment.Exit(0);
+            //Environment.Exit(0);
         }
 
-        private static (bool, Creature, Creature) MainMenuSelection(int choice, Combat combat, Creature hero, Creature foe)
+        private static bool MainMenuSelection(int ch, Hero hero)
         {
-            switch (choice)
+            var input = (int)Convert.ToChar(Convert.ToChar(ch).ToString().ToUpper());
+
+            switch (input)
             {
-                case 0x30:
-                    return (true, null, null);
-                case 0x31:
-                    combat.DeathMatch(hero, foe);
-                    PrintMenu();
-                    return (false, null, null);
-                case 0x32:
-                    combat.Round(hero, foe);
-                    return (false, null, null);
-                case 0x33:
-                    hero.Hp = hero.HpMax;
-                    return (false, null, null);
-                case 0x34:
-                    foe.Hp = foe.HpMax;
-                    return (false, null, null);
-                case 0x35:
-                    return (false, NewCreature(hero, true), null);
-                case 0x36:
-                    return (false, null, NewCreature(foe, false));
-                case 0x37:
-                    return (false, null, null);
-                case 0x38:
-                    return (false, null, null);
-                case 0x39:
-                    PrintMenu();
-                    return (false, null, null);
+                case 0x52: //R
+                    Combat combat = new Combat(hero);
+                    return false;
+                case 0x56: //V
+                    PrintStats(hero);
+                    return false;
+                case 0x47: //G
+                    PrintRest(hero);
+                    return false;
+                case 0x4E: //N
+                    PrintNewHero(hero);
+                    return false;
+                case 0x53: //S
+                    Console.WriteLine($"You picked {Convert.ToChar(input).ToString()}");
+                    return false;
+                case 0x4C: //L
+                    Console.WriteLine($"You picked {Convert.ToChar(input).ToString()}");
+                    return false;
+                case 0x4D: //M
+                    PrintMenu(hero.Name);
+                    return false;
+                case 0x51: //Q
+                    Console.WriteLine("Run away little girl!");
+                    return true;
             }
 
-            return (false, null, null);
+            return false;
         }
 
-        private static void PrintMenu()
+        private static void PrintHeader(string name = "")
         {
-            Console.WriteLine('\n');
-            Console.WriteLine("" +
-                              "*****************************\n" +
-                              "0) Run away little girl! (quit)\n" +
-                              "1) DEATHMATCH\n" +
-                              "2) ATTACK!\n" +
-                              "3) Heal hero\n" +
-                              "4) Heal foe\n" +
-                              "5) New Hero\n" +
-                              "6) New Foe\n" +
-                              "7) Load\n" +
-                              "8) Save\n" +
-                              "9) Print Menu\n" +
-                              "*****************************");
+            Console.Clear();
+            ColorText("Hack N Heroes", ConsoleColor.White);
+
+            if (!String.IsNullOrEmpty(name))
+                ColorText($" - {name}\n", ConsoleColor.Cyan);
+            else
+                Console.Write('\n');
+
+            ColorText("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n", 
+                ConsoleColor.Magenta);
+        }
+
+        private static void PrintFooter(string heroName = "hero")
+        {
+            Console.Write('\n');
+            ColorText("The Arena", ConsoleColor.Magenta);
+            ColorText(" - (M to print menu)\n", ConsoleColor.Gray);
+            ColorText("(R, V, G, N, S, L, Q, M)\n", ConsoleColor.Gray);
+            Console.Write('\n');
+            Console.Write("Your command, ");
+            ColorText($"{heroName}", ConsoleColor.Cyan);
+            Console.Write("? : ");
+        }
+
+        private static void PrintMenu(string heroName = "hero")
+        {
+            PrintHeader();
+            Console.WriteLine("You enter the arena like a boss hardly noticed by bustling crowd. The bored ");
+            Console.WriteLine("announcer yawns and presents yet another hero wanting to test their metal.");
+            Console.WriteLine("You're going to have to prove yourself in this area...");
+            Console.Write('\n');
+            PrintMenuItem("Raise your sword and fight!");
+            PrintMenuItem("View your stats");
+            PrintMenuItem("Goto the resting pens and save");
+            PrintMenuItem("New hero");
+            PrintMenuItem("Save hero");
+            PrintMenuItem("Load hero");
+            PrintMenuItem("Quit");
+            PrintFooter(heroName);
+        }
+
+        private static void PrintStats(Hero hero)
+        {
+            PrintHeader("Hero Stats");
+            Console.WriteLine($"Name: {hero.Name}");
+            Console.WriteLine($"Level: {hero.getLevel()}");
+            Console.WriteLine($"Experience: {hero.Experience}");
+            Console.WriteLine($"HP: {hero.Hp}");
+            Console.WriteLine($"Damage: {hero.Damage}");
+            Console.WriteLine($"Kills: {hero.Kills}");
+            PrintFooter(hero.Name);
+        }
+
+        private static void PrintRest(Hero hero)
+        {
+            PrintHeader("Rest");
+            Console.WriteLine($"{hero.Name} thuds heavily on the pile of straw that serves as a bed and sleeps.");
+            hero.Rest();
+            PrintFooter(hero.Name);
+        }
+
+        private static void PrintNewHero(Hero hero)
+        {
+            bool stop = false;
+
+            while (!stop)
+            {
+                Console.Clear();
+                PrintHeader("New Hero");
+                Console.Write($"Name: ");
+                var name = Console.ReadLine();
+                if (name.Length > 3)
+                {
+                    hero.New(name);
+                    stop = true;
+                }
+            }
+            
+            PrintFooter(hero.Name);
+        }
+
+        private static void PrintMenuItem(string text)
+        {
+            Console.Write("(");
+            ColorText(text[0]);
+            Console.WriteLine($"){text.Substring(1)}");
+        }
+        private static string ColorText(string chars, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.Write($"{chars}");
+            Console.ForegroundColor = ConsoleColor.Green;
+            return "";
+        }
+
+        private static void ColorText(char ch)
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.Write($"{ch}");
+            Console.ForegroundColor = ConsoleColor.Green;
         }
 
         private static Creature NewCreature(Creature hero, bool isHero = true)
@@ -91,7 +177,7 @@ namespace HackNHeroes
             var type = "creature";
             if (isHero) type = "hero";
 
-            Console.WriteLine(@"What is the new {type}'s name: ");
+            Console.WriteLine($"What is the new {type}'s name: ");
             hero.Name = Console.ReadLine();
 
             Console.WriteLine('\n');
