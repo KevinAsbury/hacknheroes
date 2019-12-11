@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,12 +10,14 @@ namespace HackNHeroes
     internal class Combat : IDisposable
     {
         private Hero Hero { get; set; }
-        private List<Monster> Monsters { get; set; }
+        private List<Monster> MonsterList { get; set; }
+        internal Monster Foe { get; set; }
 
         // Free up resources after battle
         bool disposed = false;
         SafeHandle handle = new SafeFileHandle(IntPtr.Zero, true);
 
+        // Flag for GC
         public void Dispose()
         {
             Dispose(true);
@@ -32,10 +35,45 @@ namespace HackNHeroes
             else
             {
                 Hero = hero;
-                // TODO: Do Battle!
+                LoadMonsters();
+                LoadFoe();
+            }
+        }
+
+        internal void Fight()
+        {
+            // Determine who attacks first this round
+            if (Hero.isAlive() && Foe.isAlive())
+            {
+                var rand = new Random();
+                var coinFlip = rand.Next(1, 101);
+
+                if (coinFlip > 50 && Hero.isAlive() && Foe.isAlive())
+                {
+                    Console.WriteLine($"{Hero.Name} attacks!");
+                    var dmg = Hero.attack(Foe);
+                    Console.WriteLine($"{Foe.Name} takes {dmg} damage and has {Foe.Hp} health left.\n");
+                }
+                else if (coinFlip < 51 && Hero.isAlive() && Foe.isAlive())
+                {
+                    Console.WriteLine($"{Foe.Name} attacks!");
+                    var dmg = Foe.attack(Hero);
+                    Console.WriteLine($"{Hero.Name} takes {dmg} damage and has {Hero.Hp} health left.\n");
+                }
+            }
+
+            if (!Hero.isAlive())
+            {
+                Console.WriteLine("You're hero has fallen!\n");
                 this.Dispose();
             }
 
+
+            if (!Foe.isAlive())
+            {
+                Console.Write("Way to go! Ding-dong the foe is dead.\n");
+                this.Dispose();
+            }
         }
 
         protected virtual void Dispose(bool disposing)
@@ -49,15 +87,52 @@ namespace HackNHeroes
             disposed = true;
         }
 
-        internal void AddMonster(Monster monster)
+        private void LoadFoe()
         {
-            Monsters.Add(monster);
+            // Create a monster pool
+            var pool = new List<Monster>();
+
+            // Fill pool with level appropriate monsters
+            foreach (var monster in MonsterList)
+                if (monster.Ranking < Hero.getLevel())
+                    pool.Add(monster);
+
+            // Pick a random monster from pool
+            var rand = new Random();
+            var i = rand.Next(pool.Count);
+            Foe = pool[i];
+        }
+
+        private void LoadMonsters()
+        {
+            MonsterList = new List<Monster>();
+
+            string filePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
+                $@"\Monsters.csv";
+            List<string> lines = new List<string>();
+
+            var line = "";
+
+            using (System.IO.StreamReader file = new System.IO.StreamReader(filePath))
+                while ((line = file.ReadLine()) != null)
+                {
+                    string[] split = line.Split(',');
+                    var monster = new Monster(
+                        split[0].ToString(),
+                        Convert.ToInt32(split[1]),
+                        Convert.ToInt32(split[3]),
+                        Convert.ToInt32(split[4]),
+                        Convert.ToInt32(split[5]));
+                    MonsterList.Add(monster);
+                }
         }
 
         ~Combat()
         {
             Dispose(false);
         }
+
+
         //internal void DeathMatch(Creature hero, Creature foe)
         //{
         //    Console.Write("EARTH SHAKING BATTLES OF EPIC PROPORTIONS ENSUE...\n");

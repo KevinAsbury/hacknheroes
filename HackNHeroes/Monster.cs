@@ -23,7 +23,7 @@ namespace HackNHeroes
             Experience = 100;
         }
 
-        public Monster(string name, int hp, int damage, int ranking, int intiative, int experience)
+        public Monster(string name, int hp, int damage, int ranking, int experience)
         {
             Name = name;
             Hp = hp;
@@ -39,6 +39,14 @@ namespace HackNHeroes
                 return true;
 
             return false;
+        }
+
+        internal int attack(Hero hero)
+        {
+            var rand = new Random();
+            var dmg = rand.Next(0, Damage);
+            hero.Hp -= dmg;
+            return dmg;
         }
     }
 }

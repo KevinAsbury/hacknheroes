@@ -30,7 +30,7 @@ namespace HackNHeroes
             switch (input)
             {
                 case 0x52: //R
-                    Combat combat = new Combat(hero);
+                    PrintCombat(hero);
                     return false;
                 case 0x56: //V
                     PrintStats(hero);
@@ -157,6 +157,25 @@ namespace HackNHeroes
                 }
             }
             
+            PrintFooter(hero.Name);
+        }
+
+        private static void PrintCombat(Hero hero)
+        {
+            bool stop = false;
+            var combat = new Combat(hero);
+
+            while (!stop)
+            {
+                Console.Clear();
+                PrintHeader("Combat");
+                Console.WriteLine($"Hero HP: {hero.Hp} / {hero.HpMax}");
+                Console.WriteLine($"{combat.Foe.Name} HP: {combat.Foe.Hp} / {combat.Foe.HpMax}");
+                PrintMenuItem($"Attack {combat.Foe.Name}");
+                PrintMenuItem($"Consign");
+                var option = Console.ReadLine();
+            }
+
             PrintFooter(hero.Name);
         }
 
