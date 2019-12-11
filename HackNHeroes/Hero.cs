@@ -55,7 +55,7 @@ namespace HackNHeroes
         internal int attack(Monster monster)
         {
             var rand = new Random();
-            var dmg = rand.Next(0, Damage);
+            var dmg = rand.Next(1, Damage);
             monster.Hp -= dmg;
             return dmg;
         }

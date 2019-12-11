@@ -164,6 +164,7 @@ namespace HackNHeroes
         {
             bool stop = false;
             var combat = new Combat(hero);
+            var foe = combat.Foe;
 
             while (!stop)
             {
@@ -173,8 +174,8 @@ namespace HackNHeroes
                 //Console.WriteLine($"{combat.Foe.Name} HP: {combat.Foe.Hp} / {combat.Foe.HpMax}");
                 Console.WriteLine("");
 
-                if (combat.Foe.isAlive() && hero.isAlive())
-                    PrintMenuItem($"Attack {combat.Foe.Name}");
+                if (foe.isAlive() && hero.isAlive())
+                    PrintMenuItem($"Attack {foe.Name}");
 
                 PrintMenuItem($"Consign");
                 //var input = (int)Convert.ToChar(Convert.ToChar(Console.Read()).ToString().ToUpper());
@@ -186,11 +187,11 @@ namespace HackNHeroes
                     
                     if (input == 0x41)
                     {
-                        combat.Fight(hero);
+                        combat.Fight(hero, foe);
                         ColorText($"{hero.Name}", ConsoleColor.Cyan);
                         ColorText($" HP: {hero.Hp} / {hero.HpMax}\n", ConsoleColor.Magenta);
-                        ColorText($"{combat.Foe.Name}", ConsoleColor.Cyan);
-                        ColorText($" HP: {combat.Foe.Hp} / {combat.Foe.HpMax}", ConsoleColor.Magenta);
+                        ColorText($"{foe.Name}", ConsoleColor.Cyan);
+                        ColorText($" HP: {foe.Hp} / {foe.HpMax}", ConsoleColor.Magenta);
                         Console.Write('\n');
                         Console.Write("Your command, ");
                         ColorText($"{hero.Name}", ConsoleColor.Cyan);
