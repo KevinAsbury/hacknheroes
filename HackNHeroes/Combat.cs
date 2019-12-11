@@ -9,7 +9,7 @@ namespace HackNHeroes
 {
     internal class Combat : IDisposable
     {
-        private Hero Hero { get; set; }
+        //private Hero Hero { get; set; }
         private List<Monster> MonsterList { get; set; }
         internal Monster Foe { get; set; }
 
@@ -34,35 +34,35 @@ namespace HackNHeroes
             }
             else
             {
-                Hero = hero;
+                //Hero = hero;
                 LoadMonsters();
-                LoadFoe();
+                LoadFoe(hero);
             }
         }
 
-        internal void Fight()
+        internal void Fight(Hero hero)
         {
             // Determine who attacks first this round
-            if (Hero.isAlive() && Foe.isAlive())
+            if (hero.isAlive() && Foe.isAlive())
             {
                 var rand = new Random();
                 var coinFlip = rand.Next(1, 101);
 
-                if (coinFlip > 50 && Hero.isAlive() && Foe.isAlive())
+                if (coinFlip > 50 && hero.isAlive() && Foe.isAlive())
                 {
-                    Console.WriteLine($"{Hero.Name} attacks!");
-                    var dmg = Hero.attack(Foe);
+                    Console.WriteLine($"{hero.Name} attacks!");
+                    var dmg = hero.attack(Foe);
                     Console.WriteLine($"{Foe.Name} takes {dmg} damage and has {Foe.Hp} health left.\n");
                 }
-                else if (coinFlip < 51 && Hero.isAlive() && Foe.isAlive())
+                else if (coinFlip < 51 && hero.isAlive() && Foe.isAlive())
                 {
                     Console.WriteLine($"{Foe.Name} attacks!");
-                    var dmg = Foe.attack(Hero);
-                    Console.WriteLine($"{Hero.Name} takes {dmg} damage and has {Hero.Hp} health left.\n");
+                    var dmg = Foe.attack(hero);
+                    Console.WriteLine($"{hero.Name} takes {dmg} damage and has {hero.Hp} health left.\n");
                 }
             }
 
-            if (!Hero.isAlive())
+            if (!hero.isAlive())
             {
                 Console.WriteLine("You're hero has fallen!\n");
                 this.Dispose();
@@ -87,14 +87,14 @@ namespace HackNHeroes
             disposed = true;
         }
 
-        private void LoadFoe()
+        private void LoadFoe(Hero hero)
         {
             // Create a monster pool
             var pool = new List<Monster>();
 
             // Fill pool with level appropriate monsters
             foreach (var monster in MonsterList)
-                if (monster.Ranking < Hero.getLevel())
+                if (monster.Ranking < hero.getLevel())
                     pool.Add(monster);
 
             // Pick a random monster from pool

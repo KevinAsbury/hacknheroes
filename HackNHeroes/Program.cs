@@ -169,11 +169,43 @@ namespace HackNHeroes
             {
                 Console.Clear();
                 PrintHeader("Combat");
-                Console.WriteLine($"Hero HP: {hero.Hp} / {hero.HpMax}");
-                Console.WriteLine($"{combat.Foe.Name} HP: {combat.Foe.Hp} / {combat.Foe.HpMax}");
-                PrintMenuItem($"Attack {combat.Foe.Name}");
+                //Console.WriteLine($"Hero HP: {hero.Hp} / {hero.HpMax}");
+                //Console.WriteLine($"{combat.Foe.Name} HP: {combat.Foe.Hp} / {combat.Foe.HpMax}");
+                Console.WriteLine("");
+
+                if (combat.Foe.isAlive() && hero.isAlive())
+                    PrintMenuItem($"Attack {combat.Foe.Name}");
+
                 PrintMenuItem($"Consign");
-                var option = Console.ReadLine();
+                //var input = (int)Convert.ToChar(Convert.ToChar(Console.Read()).ToString().ToUpper());
+
+                var quit = false;
+                do
+                {
+                    var input = (int)Convert.ToChar(Convert.ToChar(Console.Read()).ToString().ToUpper());
+                    
+                    if (input == 0x41)
+                    {
+                        combat.Fight(hero);
+                        ColorText($"{hero.Name}", ConsoleColor.Cyan);
+                        ColorText($" HP: {hero.Hp} / {hero.HpMax}\n", ConsoleColor.Magenta);
+                        ColorText($"{combat.Foe.Name}", ConsoleColor.Cyan);
+                        ColorText($" HP: {combat.Foe.Hp} / {combat.Foe.HpMax}", ConsoleColor.Magenta);
+                        Console.Write('\n');
+                        Console.Write("Your command, ");
+                        ColorText($"{hero.Name}", ConsoleColor.Cyan);
+                        Console.Write("? ");
+                        ColorText("(A, C)", ConsoleColor.Gray);
+                        Console.Write(" : ");
+                    }
+
+                    if (input == 0x43)
+                    {
+                        Console.WriteLine("Weary and on the edge of death you concede the battle. Go rest.");
+                        quit = true;
+                        stop = true;
+                    }
+                } while (!quit);
             }
 
             PrintFooter(hero.Name);
@@ -185,6 +217,13 @@ namespace HackNHeroes
             ColorText(text[0]);
             Console.WriteLine($"){text.Substring(1)}");
         }
+
+        /// <summary>
+        /// Print a string in a custom color
+        /// </summary>
+        /// <param name="chars">the string</param>
+        /// <param name="color">the color</param>
+        /// <returns>String</returns>
         private static string ColorText(string chars, ConsoleColor color)
         {
             Console.ForegroundColor = color;
@@ -193,6 +232,10 @@ namespace HackNHeroes
             return "";
         }
 
+        /// <summary>
+        /// Print a char in magenta
+        /// </summary>
+        /// <param name="ch">character</param>
         private static void ColorText(char ch)
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
