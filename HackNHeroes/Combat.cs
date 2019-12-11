@@ -42,38 +42,71 @@ namespace HackNHeroes
 
         internal void Fight(Hero hero, Monster foe)
         {
-            // Determine who attacks first this round
-            if (hero.isAlive() && foe.isAlive())
-            {
-                var rand = new Random();
-                var coinFlip = rand.Next(1, 101);
+            if (!foe.isAlive() || !hero.isAlive())
+                return;
 
-                if (coinFlip > 50 && hero.isAlive() && foe.isAlive())
+            var battle = true;
+
+            if (battle)
+            {
+                // Determine who attacks first this round
+                if (hero.isAlive() && foe.isAlive())
                 {
-                    Console.WriteLine($"{hero.Name} attacks!");
-                    var dmg = hero.attack(foe);
-                    Console.WriteLine($"{foe.Name} takes {dmg} damage and has {foe.Hp} health left.\n");
+                    var rand = new Random();
+                    var coinFlip = rand.Next(1, 101);
+
+                    if (coinFlip > 50 && hero.isAlive() && foe.isAlive())
+                    {
+                        Console.WriteLine($"{hero.Name} attacks!");
+
+                        // Do a miss roll
+                        var miss = rand.Next(1, 100);
+                        if (miss < 98)
+                        {
+                            var dmg = hero.attack(foe);
+                            Console.WriteLine($"{foe.Name} takes {dmg} damage and has {foe.Hp} health left.\n");
+                        } else
+                        {
+                            Console.WriteLine($"{hero.Name} swings and misses!");
+                        } 
+                    }
+                    else if (coinFlip < 51 && hero.isAlive() && foe.isAlive())
+                    {
+                        Console.WriteLine($"{foe.Name} attacks!");
+
+                        // Do a miss roll
+                        var miss = rand.Next(1, 100);
+                        if (miss < 98)
+                        {
+                            var dmg = foe.attack(hero);
+                            Console.WriteLine($"{hero.Name} takes {dmg} damage and has {hero.Hp} health left.\n");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{foe.Name} attacks and misses!");
+                        }  
+                    }
                 }
-                else if (coinFlip < 51 && hero.isAlive() && foe.isAlive())
+
+                if (!hero.isAlive())
                 {
-                    Console.WriteLine($"{foe.Name} attacks!");
-                    var dmg = foe.attack(hero);
-                    Console.WriteLine($"{hero.Name} takes {dmg} damage and has {hero.Hp} health left.\n");
+                    Console.WriteLine("You're hero has fallen!\n");
+                    this.Dispose();
+                }
+
+
+                if (!foe.isAlive())
+                {
+                    Console.WriteLine("***Way to go! Ding-dong the foe is dead***");
+                    Console.WriteLine($"***{hero.Name} gains {foe.Experience} XP***");
+                    Console.WriteLine("");
+                    hero.IncreaseExp(foe.Experience);
+                    hero.Kills += 1;
+                    battle = false;
+                    this.Dispose();
                 }
             }
-
-            if (!hero.isAlive())
-            {
-                Console.WriteLine("You're hero has fallen!\n");
-                this.Dispose();
-            }
-
-
-            if (!foe.isAlive())
-            {
-                Console.Write("Way to go! Ding-dong the foe is dead.\n");
-                this.Dispose();
-            }
+            
         }
 
         protected virtual void Dispose(bool disposing)

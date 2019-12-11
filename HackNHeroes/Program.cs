@@ -170,15 +170,19 @@ namespace HackNHeroes
             {
                 Console.Clear();
                 PrintHeader("Combat");
-                //Console.WriteLine($"Hero HP: {hero.Hp} / {hero.HpMax}");
-                //Console.WriteLine($"{combat.Foe.Name} HP: {combat.Foe.Hp} / {combat.Foe.HpMax}");
+                Console.WriteLine($"With great cheering from the audience the area gates to reveal a {foe.Name}!");
                 Console.WriteLine("");
 
                 if (foe.isAlive() && hero.isAlive())
                     PrintMenuItem($"Attack {foe.Name}");
 
-                PrintMenuItem($"Consign");
-                //var input = (int)Convert.ToChar(Convert.ToChar(Console.Read()).ToString().ToUpper());
+                PrintMenuItem($"Concede");
+                Console.Write('\n');
+                Console.Write("Your command, ");
+                ColorText($"{hero.Name}", ConsoleColor.Cyan);
+                Console.Write("? ");
+                ColorText("(A, C)", ConsoleColor.Gray);
+                Console.Write(" : ");
 
                 var quit = false;
                 do
