@@ -164,14 +164,14 @@ namespace HackNHeroes
             var combat = new Combat(hero);
             var foe = combat.Foe;
 
-            while (!stop)
+            do
             {
                 Console.Clear();
                 PrintHeader("Combat");
                 Console.WriteLine($"With great cheering from the audience the area gates to reveal a {foe.Name}!");
                 Console.WriteLine("");
 
-                if (foe.isAlive() && hero.isAlive())
+                if (!combat.BattleOver && foe.isAlive() && hero.isAlive())
                     PrintMenuItem($"Attack {foe.Name}");
 
                 PrintMenuItem($"Concede");
@@ -186,7 +186,7 @@ namespace HackNHeroes
                 do
                 {
                     var input = (int)Convert.ToChar(Convert.ToChar(Console.Read()).ToString().ToUpper());
-                    
+
                     if (input == 0x41)
                     {
                         combat.Fight(hero, foe);
@@ -198,7 +198,10 @@ namespace HackNHeroes
                         Console.Write("Your command, ");
                         ColorText($"{hero.Name}", ConsoleColor.Cyan);
                         Console.Write("? ");
-                        ColorText("(A, C)", ConsoleColor.Gray);
+                        if (combat.BattleOver)
+                            ColorText("(C)", ConsoleColor.Gray);
+                        else
+                            ColorText("(A, C)", ConsoleColor.Gray);
                         Console.Write(" : ");
                     }
 
@@ -209,7 +212,7 @@ namespace HackNHeroes
                         stop = true;
                     }
                 } while (!quit);
-            }
+            } while (!stop);
 
             PrintFooter(hero.Name);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
@@ -7,11 +8,11 @@ namespace HackNHeroes
 {
     internal class Combat : IDisposable
     {
+        // Declare the variables
         const int HeroMissChance = 2;
         const int FoeMissChance = 2;
-
-        // Declare the variables
         internal Monster Foe { get; set; } // The Foe
+        internal bool BattleOver;
         private List<Monster> MonsterList { get; set; } // List of monsters
         
         // Free up resources after battle
@@ -46,7 +47,10 @@ namespace HackNHeroes
         {
             // Return if the foe or hero are dead
             if (!foe.isAlive() || !hero.isAlive())
+            {
+                BattleOver = true;
                 return;
+            }
 
             // Determine who attacks first this round
             if (hero.isAlive() && foe.isAlive())
@@ -93,6 +97,7 @@ namespace HackNHeroes
             if (!hero.isAlive())
             {
                 Console.WriteLine("You're hero has fallen!\n");
+                this.BattleOver = true;
                 this.Dispose();
             }
 
@@ -104,6 +109,7 @@ namespace HackNHeroes
                 Console.WriteLine("");
                 hero.IncreaseExp(foe.Experience);
                 hero.Kills += 1;
+                this.BattleOver = true;
                 this.Dispose();
             }
         }
@@ -141,7 +147,7 @@ namespace HackNHeroes
             MonsterList = new List<Monster>();
 
             string filePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
-                $@"\Monsters.csv";
+                $@"{Path.DirectorySeparatorChar}Monsters.csv";
             List<string> lines = new List<string>();
 
             var line = "";
