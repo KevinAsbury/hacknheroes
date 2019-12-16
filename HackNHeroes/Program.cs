@@ -19,8 +19,6 @@ namespace HackNHeroes
                 var result = MainMenuSelection(Console.Read(), hero);
                 quit = result;
             } while (!quit);
-
-            //Environment.Exit(0);
         }
 
         private static bool MainMenuSelection(int ch, Hero hero)
@@ -223,12 +221,6 @@ namespace HackNHeroes
             Console.WriteLine($"){text.Substring(1)}");
         }
 
-        /// <summary>
-        /// Print a string in a custom color
-        /// </summary>
-        /// <param name="chars">the string</param>
-        /// <param name="color">the color</param>
-        /// <returns>String</returns>
         private static string ColorText(string chars, ConsoleColor color)
         {
             Console.ForegroundColor = color;
@@ -237,10 +229,6 @@ namespace HackNHeroes
             return "";
         }
 
-        /// <summary>
-        /// Print a char in magenta
-        /// </summary>
-        /// <param name="ch">character</param>
         private static void ColorText(char ch)
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
